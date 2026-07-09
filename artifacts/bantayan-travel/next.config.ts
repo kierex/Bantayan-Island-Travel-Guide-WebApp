@@ -17,6 +17,14 @@ const nextConfig: NextConfig = {
       },
     ],
   },
+  // Ensure TypeScript errors fail the build
+  typescript: {
+    ignoreBuildErrors: false,
+  },
+  // Ensure ESLint errors fail the build
+  eslint: {
+    ignoreDuringBuilds: false,
+  },
 };
 
 export default nextConfig;
