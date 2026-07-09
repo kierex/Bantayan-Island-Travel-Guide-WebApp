@@ -1,7 +1,7 @@
 "use client";
 
+import { useEffect, useRef, useState } from "react";
 import { useInView } from "react-intersection-observer";
-import CountUp from "react-countup";
 import { motion } from "framer-motion";
 
 interface StatCounterProps {
@@ -12,8 +12,37 @@ interface StatCounterProps {
   index?: number;
 }
 
+function useCountUp(end: number, duration: number, active: boolean) {
+  const [count, setCount] = useState(0);
+  const frameRef = useRef<number | null>(null);
+
+  useEffect(() => {
+    if (!active) return;
+    const startTime = performance.now();
+    const tick = (now: number) => {
+      const elapsed = now - startTime;
+      const progress = Math.min(elapsed / (duration * 1000), 1);
+      // ease-out cubic
+      const eased = 1 - Math.pow(1 - progress, 3);
+      setCount(Math.floor(eased * end));
+      if (progress < 1) {
+        frameRef.current = requestAnimationFrame(tick);
+      } else {
+        setCount(end);
+      }
+    };
+    frameRef.current = requestAnimationFrame(tick);
+    return () => {
+      if (frameRef.current) cancelAnimationFrame(frameRef.current);
+    };
+  }, [active, end, duration]);
+
+  return count;
+}
+
 export function StatCounter({ value, suffix = "+", label, description, index = 0 }: StatCounterProps) {
   const { ref, inView } = useInView({ triggerOnce: true, threshold: 0.3 });
+  const count = useCountUp(value, 2.5, inView);
 
   return (
     <motion.div
@@ -25,7 +54,7 @@ export function StatCounter({ value, suffix = "+", label, description, index = 0
       className="text-center"
     >
       <div className="text-4xl md:text-5xl font-display font-bold text-white mb-2 leading-none">
-        {inView ? <CountUp end={value} duration={2.5} separator="," suffix={suffix} /> : `0${suffix}`}
+        {count.toLocaleString()}{suffix}
       </div>
       <p className="text-white font-semibold text-base mb-1">{label}</p>
       {description && <p className="text-white/60 text-sm">{description}</p>}
