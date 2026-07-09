@@ -1,45 +1,88 @@
-# [Project name]
+# Bantayan Island Travel Guide
 
-_Replace the heading above with the project's name, and this line with one sentence describing what this app does for users._
+A complete, production-ready travel website for Bantayan Island, Cebu, Philippines. Built with Next.js 15 (App Router), TypeScript, Tailwind CSS, and Framer Motion. Deployable directly to Vercel.
 
 ## Run & Operate
 
-- `pnpm --filter @workspace/api-server run dev` — run the API server (port 5000)
-- `pnpm run typecheck` — full typecheck across all packages
-- `pnpm run build` — typecheck + build all packages
-- `pnpm --filter @workspace/api-spec run codegen` — regenerate API hooks and Zod schemas from the OpenAPI spec
-- `pnpm --filter @workspace/db run push` — push DB schema changes (dev only)
-- Required env: `DATABASE_URL` — Postgres connection string
+- `cd artifacts/bantayan-travel && npm run dev` — run locally (port 3000)
+- `cd artifacts/bantayan-travel && npm run build` — production build
+- `cd artifacts/bantayan-travel && npm run lint` — ESLint check
+- `cd artifacts/bantayan-travel && npm run typecheck` — TypeScript check
+
+## Project Location
+
+All code is in `artifacts/bantayan-travel/` — a standalone Next.js project independent of the pnpm workspace. It has its own `package.json`, `node_modules`, and is ready to be pushed to GitHub and deployed on Vercel.
 
 ## Stack
 
-- pnpm workspaces, Node.js 24, TypeScript 5.9
-- API: Express 5
-- DB: PostgreSQL + Drizzle ORM
-- Validation: Zod (`zod/v4`), `drizzle-zod`
-- API codegen: Orval (from OpenAPI spec)
-- Build: esbuild (CJS bundle)
+- **Framework**: Next.js 15.5 (App Router, static export)
+- **Language**: TypeScript 5.7
+- **Styling**: Tailwind CSS 3.4 + custom theme (ocean palette, sand colors)
+- **Animations**: Framer Motion 11
+- **Icons**: Lucide React
+- **Forms**: React Hook Form
+- **Fonts**: Inter + Playfair Display (Google Fonts)
+- **Dark Mode**: next-themes
+- **Toasts**: react-hot-toast
+- **Intersection Observer**: react-intersection-observer
 
-## Where things live
+## Where Things Live
 
-_Populate as you build — short repo map plus pointers to the source-of-truth file for DB schema, API contracts, theme files, etc._
+```
+artifacts/bantayan-travel/
+├── src/
+│   ├── app/                    # Next.js App Router pages
+│   │   ├── page.tsx            # Home page (14 sections)
+│   │   ├── layout.tsx          # Root layout + metadata
+│   │   ├── destinations/       # Destinations list + [slug] detail pages
+│   │   ├── beaches/            # Beaches page
+│   │   ├── attractions/        # Attractions page
+│   │   ├── activities/         # Activities page
+│   │   ├── food/               # Food guide page
+│   │   ├── hotels/             # Hotels page
+│   │   ├── transportation/     # Transportation guide
+│   │   ├── travel-tips/        # Travel tips page
+│   │   ├── gallery/            # Photo gallery page
+│   │   ├── about/              # About page
+│   │   ├── contact/            # Contact page
+│   │   ├── sitemap.ts          # Auto-generated sitemap
+│   │   └── robots.ts           # Robots.txt
+│   ├── components/             # Reusable UI components
+│   ├── hooks/                  # Custom React hooks
+│   ├── lib/                    # Data (destinations, hotels, etc.) + utils
+│   └── types/                  # TypeScript type definitions
+├── public/                     # Static assets
+├── next.config.ts
+├── tailwind.config.ts
+├── tsconfig.json
+├── package.json
+└── vercel.json
+```
 
-## Architecture decisions
+## Vercel Deployment
 
-_Populate as you build — non-obvious choices a reader couldn't infer from the code (3-5 bullets)._
+1. Push `artifacts/bantayan-travel/` to a GitHub repo (or push the whole monorepo and set root directory to `artifacts/bantayan-travel/`)
+2. Import into Vercel — no configuration needed
+3. Build command: `npm run build` · Output: `.next` · Install: `npm install`
 
-## Product
+## Architecture Decisions
 
-_Describe the high-level user-facing capabilities of this app once they exist._
+- All 15 destination pages are statically generated via `generateStaticParams`
+- Favorites system uses localStorage (no backend required)
+- Dark mode managed by next-themes with class strategy
+- Images served from Unsplash CDN (configured in next.config.ts remotePatterns)
+- No external API dependencies — fully static site
 
-## User preferences
+## User Preferences
 
-_Populate as you build — explicit user instructions worth remembering across sessions._
-
-## Gotchas
-
-_Populate as you build — sharp edges, "always run X before Y" rules._
+- Developer credit: Vernie Esgana, BSIT 3 NORTH (displayed in footer)
+- No emojis anywhere in the UI
+- Professional travel website aesthetic (Airbnb/Booking.com/Lonely Planet style)
+- Glassmorphism used sparingly (hero stats bar, map overlay)
 
 ## Pointers
 
-- See the `pnpm-workspace` skill for workspace structure, TypeScript setup, and package details
+- All destination/hotel/food/activity content is in `src/lib/data.ts` — edit there to update content
+- Theme colors are defined in `tailwind.config.ts` under `primary` and `ocean`
+- Contact form currently shows a success toast — wire to an email service (Resend, SendGrid) for production
+- Google Maps iframes use public embed URLs — replace with Maps API key for advanced features

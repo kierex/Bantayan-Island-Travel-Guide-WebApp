@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://bantayan-island-guide.vercel.app/sitemap.xml
